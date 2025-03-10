@@ -1,0 +1,80 @@
+-- SQL File: group_by_clause_queries.sql
+
+-- Definition:
+-- The GROUP BY clause is used in SQL to group rows that have the same values in specified columns.
+-- It is often used with aggregate functions such as COUNT, SUM, AVG, MAX, and MIN to perform calculations on grouped data.
+-- The GROUP BY clause follows the WHERE clause and precedes the ORDER BY clause in a SQL query.
+-- The HAVING clause is used to filter records after the GROUP BY operation, similar to WHERE but for aggregated data.
+
+-- Basic GROUP BY usage
+SELECT department_id, COUNT(*) AS employee_count 
+FROM employees 
+GROUP BY department_id; -- Counts the number of employees in each department
+
+-- Using GROUP BY with SUM
+SELECT department_id, SUM(salary) AS total_salary 
+FROM employees 
+GROUP BY department_id; -- Calculates total salary per department
+
+-- Using GROUP BY with AVG
+SELECT department_id, AVG(salary) AS average_salary 
+FROM employees 
+GROUP BY department_id; -- Calculates average salary per department
+
+-- Using GROUP BY with MIN and MAX
+SELECT department_id, MIN(salary) AS min_salary, MAX(salary) AS max_salary 
+FROM employees 
+GROUP BY department_id; -- Retrieves the minimum and maximum salary in each department
+
+-- Using GROUP BY with multiple columns
+SELECT department_id, job_title, COUNT(*) AS employee_count 
+FROM employees 
+GROUP BY department_id, job_title; -- Groups by department and job title, counting employees in each combination
+
+-- Using GROUP BY with HAVING to filter grouped results
+SELECT department_id, COUNT(*) AS employee_count 
+FROM employees 
+GROUP BY department_id 
+HAVING COUNT(*) > 5; -- Retrieves departments with more than 5 employees
+
+-- Using GROUP BY with SUM and HAVING
+SELECT department_id, SUM(salary) AS total_salary 
+FROM employees 
+GROUP BY department_id 
+HAVING SUM(salary) > 200000; -- Retrieves departments where the total salary exceeds 200,000
+
+-- Using GROUP BY with AVG and HAVING
+SELECT department_id, AVG(salary) AS average_salary 
+FROM employees 
+GROUP BY department_id 
+HAVING AVG(salary) > 50000; -- Retrieves departments where the average salary is greater than 50,000
+
+-- Using GROUP BY with COUNT and HAVING with multiple conditions
+SELECT department_id, COUNT(*) AS employee_count 
+FROM employees 
+GROUP BY department_id 
+HAVING COUNT(*) > 5 AND department_id IN (1, 2, 3); -- Retrieves departments 1, 2, or 3 that have more than 5 employees
+
+-- Using GROUP BY with ORDER BY
+SELECT department_id, COUNT(*) AS employee_count 
+FROM employees 
+GROUP BY department_id 
+ORDER BY employee_count DESC; -- Groups employees by department and sorts the result by employee count in descending order
+
+-- Using GROUP BY with a subquery
+SELECT department_id, AVG(salary) AS avg_salary 
+FROM employees 
+WHERE department_id IN (SELECT department_id FROM departments WHERE department_name LIKE 'IT%') 
+GROUP BY department_id; -- Calculates the average salary for departments whose names start with 'IT'
+
+-- Using GROUP BY with CASE for conditional grouping
+SELECT 
+    CASE 
+        WHEN salary < 50000 THEN 'Low Salary'
+        WHEN salary BETWEEN 50000 AND 100000 THEN 'Medium Salary'
+        ELSE 'High Salary'
+    END AS salary_category, 
+    COUNT(*) AS employee_count 
+FROM employees 
+GROUP BY salary_category 
+HAVING COUNT(*) > 3; -- Groups employees based on salary ranges and filters groups with more than 3 employees
